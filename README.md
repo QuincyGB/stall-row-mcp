@@ -39,7 +39,7 @@ Base, EIP-712) → paid retry — using **your** agent wallet.
 | `stall_index_changes` | Verdict Index change feed (new/changed/removed, rotations) | $0.10 |
 | `stall_orchestrate` | Full due-diligence battery on one x402 endpoint | $0.75 |
 | `stall_recheck_pack` | Buy a Recheck Pack — 250 checks for one endpoint | $1.00 |
-| `stall_fleet_pass` | Buy a Fleet Pass — 30 days of preferred fleet pricing | $5.00 |
+| `stall_fleet_pass` | Buy a Fleet Pass — $5.00 prepaid fleet balance (90 days) | $5.00 |
 | `stall_recheck_pack_balance` | Free balance read for a Recheck Pack | free |
 | `stall_fleet_pass_balance` | Free status read for a Fleet Pass | free |
 

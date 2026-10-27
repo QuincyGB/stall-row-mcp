@@ -392,10 +392,11 @@ def stall_recheck_pack(url: str) -> dict[str, Any]:
 
 @mcp.tool()
 def stall_fleet_pass() -> dict[str, Any]:
-    """Buy a Fleet Pass: 30 days of preferred fleet pricing for $5.00.
+    """Buy a Fleet Pass: a $5.00 prepaid fleet balance (90 days).
 
-    Calls StallRow POST /v1/fleet-pass. The returned pass_id is the
-    bearer credential — store it like a key.
+    Calls StallRow POST /v1/fleet-pass. The $5.00 balance spends on
+    any paid fleet route, debited at that route's listed price. The
+    returned pass_id is the bearer credential — store it like a key.
     """
     return run_fleet_pass()
 

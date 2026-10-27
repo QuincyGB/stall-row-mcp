@@ -304,7 +304,7 @@ class StallRowClient:
         response = self._http.post(url, json=body)
         if response.status_code == 200:
             # Served without payment (e.g. a recheck covered by a Recheck
-            # Pack balance, or a fleet-pass-holder rate) — take it.
+            # Pack balance, or a Fleet Pass debit) — take it.
             self.last_receipt = decode_receipt(response)
             return response.json()
         if response.status_code != 402:
