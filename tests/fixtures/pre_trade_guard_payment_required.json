@@ -1,0 +1,346 @@
+{
+ "x402Version": 2,
+ "error": "Payment required",
+ "resource": {
+  "url": "https://stall-row-production.up.railway.app/v1/pre-trade-guard",
+  "description": "Pre-Trade Guard \u2014 before you pay an x402 listing, screen the payTo you are about to pay: its Verdict Index catalog history (first seen, payTo rotations, listings added or removed across the snapshots held), an OFAC SDN exact-match check, and the wallet's Base age and activity, combined into PROCEED, CAUTION, or ABORT with itemized reasons. Use this when an agent is about to pay a payTo it has never paid before.",
+  "mimeType": "application/json",
+  "serviceName": "stall-row",
+  "tags": [
+   "x402",
+   "security",
+   "sanctions",
+   "verdict",
+   "payments",
+   "agents"
+  ]
+ },
+ "accepts": [
+  {
+   "scheme": "exact",
+   "network": "eip155:8453",
+   "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+   "amount": "5000",
+   "payTo": "0x097f9685D1e0752bF8B02d61E5Ce9be7eA0FBA7F",
+   "maxTimeoutSeconds": 300,
+   "extra": {
+    "name": "USD Coin",
+    "version": "2"
+   }
+  }
+ ],
+ "extensions": {
+  "bazaar": {
+   "info": {
+    "input": {
+     "type": "http",
+     "method": "POST",
+     "bodyType": "json",
+     "body": {
+      "pay_to": "0x097f9685D1e0752bF8B02d61E5Ce9be7eA0FBA7F",
+      "resource": "https://stall-row-production.up.railway.app/v1/wallet-verdict",
+      "amount": 20000
+     }
+    },
+    "output": {
+     "type": "json",
+     "example": {
+      "pay_to": "0x097f9685D1e0752bF8B02d61E5Ce9be7eA0FBA7F",
+      "resource": "https://stall-row-production.up.railway.app/v1/wallet-verdict",
+      "amount": 20000,
+      "network": "eip155:8453",
+      "verdict": "PROCEED",
+      "risk_score": 0,
+      "unknown_legs": [],
+      "sanctions": {
+       "status": "no_match",
+       "matched": false,
+       "snapshot_date": "2026-10-21"
+      },
+      "index": {
+       "status": "ok",
+       "snapshots_held": 3,
+       "listed_now": 16,
+       "first_seen_at": "2026-10-26T18:00:00Z",
+       "rotations_in": [],
+       "rotations_out": []
+      },
+      "wallet": {
+       "status": "ok",
+       "age_days": 352,
+       "outgoing_tx_count_nonce": 137
+      },
+      "reasons": [
+       {
+        "name": "catalog track record",
+        "points": 0,
+        "detail": "PayTo appears in the snapshots held with no payTo rotations."
+       }
+      ],
+      "not_checked": "Operator identity and delivery quality are not checked.",
+      "limits": "Listing history covers only the snapshots held."
+     },
+     "schema": {
+      "type": "object",
+      "properties": {
+       "pay_to": {
+        "type": "string"
+       },
+       "resource": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "amount": {
+        "type": [
+         "integer",
+         "string",
+         "null"
+        ]
+       },
+       "network": {
+        "type": "string"
+       },
+       "verdict": {
+        "type": "string",
+        "enum": [
+         "PROCEED",
+         "CAUTION",
+         "ABORT"
+        ]
+       },
+       "risk_score": {
+        "type": "integer"
+       },
+       "unknown_legs": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "sanctions": {
+        "type": "object"
+       },
+       "index": {
+        "type": "object"
+       },
+       "wallet": {
+        "type": "object"
+       },
+       "reasons": {
+        "type": "array",
+        "items": {
+         "type": "object",
+         "properties": {
+          "name": {
+           "type": "string"
+          },
+          "points": {
+           "type": "integer"
+          },
+          "detail": {
+           "type": "string"
+          }
+         },
+         "required": [
+          "name",
+          "points",
+          "detail"
+         ]
+        }
+       },
+       "not_checked": {
+        "type": "string"
+       },
+       "limits": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "pay_to",
+       "verdict",
+       "risk_score",
+       "sanctions",
+       "index",
+       "wallet",
+       "reasons"
+      ]
+     }
+    }
+   },
+   "schema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+     "input": {
+      "type": "object",
+      "properties": {
+       "type": {
+        "type": "string",
+        "const": "http"
+       },
+       "method": {
+        "type": "string",
+        "enum": [
+         "POST",
+         "PUT",
+         "PATCH"
+        ]
+       },
+       "bodyType": {
+        "type": "string",
+        "enum": [
+         "json",
+         "form-data",
+         "text"
+        ]
+       },
+       "body": {
+        "type": "object",
+        "properties": {
+         "pay_to": {
+          "type": "string"
+         },
+         "amount": {
+          "type": [
+           "integer",
+           "string",
+           "null"
+          ]
+         },
+         "network": {
+          "type": [
+           "string",
+           "null"
+          ]
+         },
+         "resource": {
+          "type": [
+           "string",
+           "null"
+          ]
+         }
+        },
+        "required": [
+         "pay_to"
+        ]
+       }
+      },
+      "required": [
+       "type",
+       "method",
+       "bodyType",
+       "body"
+      ],
+      "additionalProperties": false
+     },
+     "output": {
+      "type": "object",
+      "properties": {
+       "type": {
+        "type": "string"
+       },
+       "example": {
+        "type": "object",
+        "properties": {
+         "pay_to": {
+          "type": "string"
+         },
+         "resource": {
+          "type": [
+           "string",
+           "null"
+          ]
+         },
+         "amount": {
+          "type": [
+           "integer",
+           "string",
+           "null"
+          ]
+         },
+         "network": {
+          "type": "string"
+         },
+         "verdict": {
+          "type": "string",
+          "enum": [
+           "PROCEED",
+           "CAUTION",
+           "ABORT"
+          ]
+         },
+         "risk_score": {
+          "type": "integer"
+         },
+         "unknown_legs": {
+          "type": "array",
+          "items": {
+           "type": "string"
+          }
+         },
+         "sanctions": {
+          "type": "object"
+         },
+         "index": {
+          "type": "object"
+         },
+         "wallet": {
+          "type": "object"
+         },
+         "reasons": {
+          "type": "array",
+          "items": {
+           "type": "object",
+           "properties": {
+            "name": {
+             "type": "string"
+            },
+            "points": {
+             "type": "integer"
+            },
+            "detail": {
+             "type": "string"
+            }
+           },
+           "required": [
+            "name",
+            "points",
+            "detail"
+           ]
+          }
+         },
+         "not_checked": {
+          "type": "string"
+         },
+         "limits": {
+          "type": "string"
+         }
+        },
+        "required": [
+         "pay_to",
+         "verdict",
+         "risk_score",
+         "sanctions",
+         "index",
+         "wallet",
+         "reasons"
+        ]
+       },
+       "schema": {
+        "type": "object"
+       }
+      },
+      "required": [
+       "type"
+      ]
+     }
+    },
+    "required": [
+     "input"
+    ]
+   }
+  }
+ }
+}

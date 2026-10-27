@@ -1,0 +1,19 @@
+{
+ "address": "0x097f9685D1e0752bF8B02d61E5Ce9be7eA0FBA7F",
+ "verdict": "SAFE",
+ "score": 100,
+ "sanctions": {
+  "status": "no_match",
+  "matched": false,
+  "snapshot_date": "2026-10-21"
+ },
+ "wallet_age_days": 352,
+ "first_activity": "2025-11-02T14:03:11+00:00",
+ "outgoing_tx_count_nonce": 137,
+ "poisoning": {
+  "status": "none_found",
+  "signals": []
+ },
+ "reasons": [],
+ "limits": "Sanctions matching is exact-address only against the bundled snapshot."
+}

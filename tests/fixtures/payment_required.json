@@ -1,0 +1,279 @@
+{
+ "x402Version": 2,
+ "error": "Payment required",
+ "resource": {
+  "url": "https://stall-row-production.up.railway.app/v1/wallet-verdict",
+  "description": "A trust verdict for one Base wallet: OFAC SDN exact-match against a dated snapshot, wallet age, activity level, and an address-poisoning scan of its recent token transfers, combined into SAFE, CAUTION, or AVOID with a 0-100 score and itemized reasons. Use this when an agent must decide whether a wallet is safe to pay or take instructions from.",
+  "mimeType": "application/json",
+  "serviceName": "stall-row",
+  "tags": [
+   "base",
+   "security",
+   "sanctions",
+   "verdict",
+   "agents"
+  ]
+ },
+ "accepts": [
+  {
+   "scheme": "exact",
+   "network": "eip155:8453",
+   "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+   "amount": "20000",
+   "payTo": "0x097f9685D1e0752bF8B02d61E5Ce9be7eA0FBA7F",
+   "maxTimeoutSeconds": 300,
+   "extra": {
+    "name": "USD Coin",
+    "version": "2"
+   }
+  }
+ ],
+ "extensions": {
+  "bazaar": {
+   "info": {
+    "input": {
+     "type": "http",
+     "method": "POST",
+     "bodyType": "json",
+     "body": {
+      "address": "0x097f9685D1e0752bF8B02d61E5Ce9be7eA0FBA7F"
+     }
+    },
+    "output": {
+     "type": "json",
+     "example": {
+      "address": "0x097f9685D1e0752bF8B02d61E5Ce9be7eA0FBA7F",
+      "verdict": "SAFE",
+      "score": 100,
+      "sanctions": {
+       "status": "no_match",
+       "matched": false,
+       "snapshot_date": "2026-10-21"
+      },
+      "wallet_age_days": 352,
+      "first_activity": "2025-11-02T14:03:11+00:00",
+      "outgoing_tx_count_nonce": 137,
+      "poisoning": {
+       "status": "none_found",
+       "signals": []
+      },
+      "reasons": [],
+      "limits": "Sanctions matching is exact-address only against the bundled snapshot."
+     },
+     "schema": {
+      "type": "object",
+      "properties": {
+       "address": {
+        "type": "string"
+       },
+       "verdict": {
+        "type": "string",
+        "enum": [
+         "SAFE",
+         "CAUTION",
+         "AVOID"
+        ]
+       },
+       "score": {
+        "type": "integer"
+       },
+       "sanctions": {
+        "type": "object"
+       },
+       "wallet_age_days": {
+        "type": [
+         "integer",
+         "null"
+        ]
+       },
+       "first_activity": {
+        "type": "string"
+       },
+       "outgoing_tx_count_nonce": {
+        "type": [
+         "integer",
+         "null"
+        ]
+       },
+       "poisoning": {
+        "type": "object"
+       },
+       "reasons": {
+        "type": "array",
+        "items": {
+         "type": "object",
+         "properties": {
+          "name": {
+           "type": "string"
+          },
+          "points": {
+           "type": "integer"
+          },
+          "detail": {
+           "type": "string"
+          }
+         },
+         "required": [
+          "name",
+          "points",
+          "detail"
+         ]
+        }
+       },
+       "limits": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "address",
+       "verdict",
+       "score",
+       "sanctions",
+       "poisoning",
+       "reasons"
+      ]
+     }
+    }
+   },
+   "schema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+     "input": {
+      "type": "object",
+      "properties": {
+       "type": {
+        "type": "string",
+        "const": "http"
+       },
+       "method": {
+        "type": "string",
+        "enum": [
+         "POST",
+         "PUT",
+         "PATCH"
+        ]
+       },
+       "bodyType": {
+        "type": "string",
+        "enum": [
+         "json",
+         "form-data",
+         "text"
+        ]
+       },
+       "body": {
+        "type": "object",
+        "properties": {
+         "address": {
+          "type": "string"
+         }
+        },
+        "required": [
+         "address"
+        ]
+       }
+      },
+      "required": [
+       "type",
+       "method",
+       "bodyType",
+       "body"
+      ],
+      "additionalProperties": false
+     },
+     "output": {
+      "type": "object",
+      "properties": {
+       "type": {
+        "type": "string"
+       },
+       "example": {
+        "type": "object",
+        "properties": {
+         "address": {
+          "type": "string"
+         },
+         "verdict": {
+          "type": "string",
+          "enum": [
+           "SAFE",
+           "CAUTION",
+           "AVOID"
+          ]
+         },
+         "score": {
+          "type": "integer"
+         },
+         "sanctions": {
+          "type": "object"
+         },
+         "wallet_age_days": {
+          "type": [
+           "integer",
+           "null"
+          ]
+         },
+         "first_activity": {
+          "type": "string"
+         },
+         "outgoing_tx_count_nonce": {
+          "type": [
+           "integer",
+           "null"
+          ]
+         },
+         "poisoning": {
+          "type": "object"
+         },
+         "reasons": {
+          "type": "array",
+          "items": {
+           "type": "object",
+           "properties": {
+            "name": {
+             "type": "string"
+            },
+            "points": {
+             "type": "integer"
+            },
+            "detail": {
+             "type": "string"
+            }
+           },
+           "required": [
+            "name",
+            "points",
+            "detail"
+           ]
+          }
+         },
+         "limits": {
+          "type": "string"
+         }
+        },
+        "required": [
+         "address",
+         "verdict",
+         "score",
+         "sanctions",
+         "poisoning",
+         "reasons"
+        ]
+       },
+       "schema": {
+        "type": "object"
+       }
+      },
+      "required": [
+       "type"
+      ]
+     }
+    },
+    "required": [
+     "input"
+    ]
+   }
+  }
+ }
+}

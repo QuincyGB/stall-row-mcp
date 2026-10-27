@@ -1,0 +1,36 @@
+{
+ "pay_to": "0x097f9685D1e0752bF8B02d61E5Ce9be7eA0FBA7F",
+ "resource": "https://stall-row-production.up.railway.app/v1/wallet-verdict",
+ "amount": 20000,
+ "network": "eip155:8453",
+ "verdict": "PROCEED",
+ "risk_score": 0,
+ "unknown_legs": [],
+ "sanctions": {
+  "status": "no_match",
+  "matched": false,
+  "snapshot_date": "2026-10-21"
+ },
+ "index": {
+  "status": "ok",
+  "snapshots_held": 3,
+  "listed_now": 16,
+  "first_seen_at": "2026-10-26T18:00:00Z",
+  "rotations_in": [],
+  "rotations_out": []
+ },
+ "wallet": {
+  "status": "ok",
+  "age_days": 352,
+  "outgoing_tx_count_nonce": 137
+ },
+ "reasons": [
+  {
+   "name": "catalog track record",
+   "points": 0,
+   "detail": "PayTo appears in the snapshots held with no payTo rotations."
+  }
+ ],
+ "not_checked": "Operator identity and delivery quality are not checked.",
+ "limits": "Listing history covers only the snapshots held."
+}
