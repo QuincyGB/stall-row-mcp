@@ -1,0 +1,9 @@
+{
+ "target": {
+  "type": "url",
+  "value": "https://example.com/v1/verdict"
+ },
+ "found": true,
+ "computed_at": "2026-10-30T12:00:00Z",
+ "limits": "Aggregates cover only what this service's stores hold."
+}

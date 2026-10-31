@@ -166,6 +166,45 @@ def run_orchestrate(
     )
 
 
+def run_sign_read(
+    url: str,
+    declared_method: str | None = None,
+    declared_amount: str | None = None,
+    declared_pay_to: str | None = None,
+    declared_network: str | None = None,
+    client: StallRowClient | None = None,
+) -> dict:
+    return _wrap(
+        lambda c: c.sign_read(
+            url, declared_method, declared_amount, declared_pay_to, declared_network
+        ),
+        client,
+    )
+
+
+def run_score_book(
+    url: str | None = None,
+    origin: str | None = None,
+    pay_to: str | None = None,
+    client: StallRowClient | None = None,
+) -> dict:
+    return _wrap(lambda c: c.score_book(url, origin, pay_to), client)
+
+
+def run_guard(url: str, client: StallRowClient | None = None) -> dict:
+    return _wrap(lambda c: c.guard(url), client)
+
+
+def run_recheck_feed(
+    since_seq: int | None = None,
+    watch_id: str | None = None,
+    url: str | None = None,
+    limit: int | None = None,
+    client: StallRowClient | None = None,
+) -> dict:
+    return _wrap(lambda c: c.recheck_feed(since_seq, watch_id, url, limit), client)
+
+
 def run_recheck_pack(url: str, client: StallRowClient | None = None) -> dict:
     return _wrap(lambda c: c.recheck_pack(url), client)
 
@@ -377,6 +416,84 @@ def stall_orchestrate(
     failed leg is marked in the report, not hidden.
     """
     return run_orchestrate(address, service_url, listing_url, chain)
+
+
+@mcp.tool()
+def stall_sign_read(
+    url: str,
+    declared_method: str | None = None,
+    declared_amount: str | None = None,
+    declared_pay_to: str | None = None,
+    declared_network: str | None = None,
+) -> dict[str, Any]:
+    """Read one x402 endpoint's 402 sign: parse + SDK verdict ($0.01).
+
+    Calls StallRow POST /v1/sign-read. Parses both challenge wire
+    formats (v2 PAYMENT-REQUIRED header, v1 JSON body) and returns
+    every accept normalized (scheme, network, asset, amount atomic
+    and exact decimal, payTo), malformed fields named, plus Python
+    and TypeScript x402 SDK compatibility verdicts. Pass your
+    catalogue entry (declared_method / declared_amount /
+    declared_pay_to / declared_network) and every disagreement with
+    the live sign is reported as a mismatch. The probe is unpaid; an
+    unreachable or non-402 target is a delivered report, not an error.
+    """
+    return run_sign_read(
+        url, declared_method, declared_amount, declared_pay_to, declared_network
+    )
+
+
+@mcp.tool()
+def stall_score_book(
+    url: str | None = None,
+    origin: str | None = None,
+    pay_to: str | None = None,
+) -> dict[str, Any]:
+    """Track record for one resource, origin, or payTo ($0.01).
+
+    Calls StallRow POST /v1/score-book. Aggregated from StallRow's
+    own stores (Recheck history + Verdict Index snapshots): check
+    counts by outcome, first/last seen, distinct prices and payTos
+    the live sign has carried, price/payTo change counts, current
+    fingerprint, catalogue presence. Exactly one of url / origin /
+    pay_to per call. Probes nothing — a target with no record
+    answers found=false.
+    """
+    return run_score_book(url, origin, pay_to)
+
+
+@mcp.tool()
+def stall_guard(url: str) -> dict[str, Any]:
+    """Pre-pay verdict for one x402 endpoint: PROCEED / CAUTION / ABORT ($0.01).
+
+    Calls StallRow POST /v1/guard. Composes the Sign Reader's live
+    terms + SDK verdict, the bad-payTo registry screen (OFAC snapshot
+    plus catalogue rotation/vanishing flags, evidence attached), and
+    the Score Book's history leg. A sign no standard client can
+    parse, or a flagged payTo, is a hard ABORT; unknown history caps
+    at CAUTION. Every verdict carries its reasons.
+    """
+    return run_guard(url)
+
+
+@mcp.tool()
+def stall_recheck_feed(
+    since_seq: int | None = None,
+    watch_id: str | None = None,
+    url: str | None = None,
+    limit: int | None = None,
+) -> dict[str, Any]:
+    """Free: read the Recheck feed (v2 hash-chained cursor surface).
+
+    Calls StallRow GET /v1/recheck/feed?v=2 (no charge, read-only).
+    Each record is an envelope (seq, record_id, schema_version,
+    prev_hash, record_hash, record) — the hash chain proves nothing
+    was silently dropped. Pass since_seq to advance a cursor
+    (records with seq > since_seq, ascending); the response carries
+    the chain head as latest_seq so the caller can store the next
+    cursor. Optional watch_id / url filters and limit.
+    """
+    return run_recheck_feed(since_seq, watch_id, url, limit)
 
 
 @mcp.tool()

@@ -1,6 +1,6 @@
 """Server-level tests: every route is registered as a tool with the
-service's input fields, and the schemas module covers all 17 priced
-routes."""
+service's input fields, and the schemas module covers all 20 priced
+routes this wrapper sells."""
 
 from __future__ import annotations
 
@@ -24,6 +24,8 @@ EXPECTED_TOOLS = {
     "stall_recheck", "stall_index_changes", "stall_orchestrate",
     "stall_recheck_pack", "stall_fleet_pass",
     "stall_recheck_pack_balance", "stall_fleet_pass_balance",
+    "stall_sign_read", "stall_score_book", "stall_guard",
+    "stall_recheck_feed",
 }
 
 
@@ -43,6 +45,9 @@ def test_tool_inputs_match_service_schemas():
         "stall_pre_trade_guard": "/v1/pre-trade-guard",
         "stall_index_changes": "/v1/index/changes",
         "stall_orchestrate": "/v1/orchestrate",
+        "stall_sign_read": "/v1/sign-read",
+        "stall_score_book": "/v1/score-book",
+        "stall_guard": "/v1/guard",
     }
     for tool_name, path in cases.items():
         props = by_name[tool_name].inputSchema["properties"]

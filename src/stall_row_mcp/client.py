@@ -26,7 +26,10 @@ debugging a payment wants, and httpx.MockTransport keeps the whole flow
 testable without a network. Signing is local; the private key comes from
 the operator's own environment and never leaves the machine.
 
-StallRow sells 17 routes from one host. Each route's spend guard
+This wrapper covers 20 of StallRow's priced routes from one host
+(the inspector toolkit — sign-read, score-book, guard — included),
+plus free reads (pack/pass balances and the Recheck feed v2). Each
+route's spend guard
 defaults to that route's known price (ROUTE_PRICES, mirroring the
 service's own config); STALL_ROW_MAX_AMOUNT_UNITS can raise/lower the
 ceiling globally, but the client never signs above the per-route guard
@@ -71,6 +74,9 @@ ROUTE_PRICES: dict[str, int] = {
     "/v1/orchestrate": 750_000,
     "/v1/recheck/pack": 1_000_000,
     "/v1/fleet-pass": 5_000_000,
+    "/v1/sign-read": 10_000,
+    "/v1/score-book": 10_000,
+    "/v1/guard": 10_000,
 }
 
 BASE_NETWORK = "eip155:8453"
@@ -460,11 +466,93 @@ class StallRowClient:
             body["chain"] = chain
         return self._call_paid("/v1/orchestrate", body)
 
+    def sign_read(
+        self,
+        url: str,
+        declared_method: str | None = None,
+        declared_amount: str | None = None,
+        declared_pay_to: str | None = None,
+        declared_network: str | None = None,
+    ) -> dict:
+        body: dict[str, Any] = {"url": url}
+        if declared_method:
+            body["declared_method"] = declared_method
+        if declared_amount:
+            body["declared_amount"] = declared_amount
+        if declared_pay_to:
+            body["declared_pay_to"] = declared_pay_to
+        if declared_network:
+            body["declared_network"] = declared_network
+        return self._call_paid("/v1/sign-read", body)
+
+    def score_book(
+        self,
+        url: str | None = None,
+        origin: str | None = None,
+        pay_to: str | None = None,
+    ) -> dict:
+        body: dict[str, Any] = {}
+        if url:
+            body["url"] = url
+        if origin:
+            body["origin"] = origin
+        if pay_to:
+            body["pay_to"] = pay_to
+        return self._call_paid("/v1/score-book", body)
+
+    def guard(self, url: str) -> dict:
+        return self._call_paid("/v1/guard", {"url": url})
+
     def recheck_pack(self, url: str) -> dict:
         return self._call_paid("/v1/recheck/pack", {"url": url})
 
     def fleet_pass(self) -> dict:
         return self._call_paid("/v1/fleet-pass", {})
+
+    # -- free reads ------------------------------------------------------------
+
+    def recheck_feed(
+        self,
+        since_seq: int | None = None,
+        watch_id: str | None = None,
+        url: str | None = None,
+        limit: int | None = None,
+    ) -> dict:
+        """Free read of the Recheck feed v2 cursor surface.
+
+        GET /v1/recheck/feed?v=2 returns one JSON envelope per line
+        (seq, record_id, schema_version, prev_hash, record_hash,
+        record). since_seq=N is the gap-proof cursor mode: records
+        with seq > N, ascending. The chain head rides in the
+        X-Recheck-Feed-Latest-Seq / -Count response headers and is
+        surfaced here so a poller can advance its cursor.
+        """
+        params: dict[str, Any] = {"v": "2"}
+        if since_seq is not None:
+            params["since_seq"] = since_seq
+        if watch_id:
+            params["watch_id"] = watch_id
+        if url:
+            params["url"] = url
+        if limit is not None:
+            params["limit"] = limit
+        response = self._http.get(self.base_url + "/v1/recheck/feed", params=params)
+        if response.status_code != 200:
+            raise StallRowError(response.status_code, _safe_json(response))
+        records = []
+        for line in response.text.splitlines():
+            line = line.strip()
+            if line:
+                records.append(json.loads(line))
+        latest = response.headers.get("X-Recheck-Feed-Latest-Seq")
+        count = response.headers.get("X-Recheck-Feed-Count")
+        return {
+            "format": "recheck-feed-v2",
+            "count": len(records),
+            "latest_seq": int(latest) if latest is not None else None,
+            "feed_count": int(count) if count is not None else None,
+            "records": records,
+        }
 
     # -- free balance reads --------------------------------------------------
 

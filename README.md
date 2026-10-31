@@ -42,6 +42,10 @@ Base, EIP-712) → paid retry — using **your** agent wallet.
 | `stall_fleet_pass` | Buy a Fleet Pass — $5.00 prepaid fleet balance (90 days) | $5.00 |
 | `stall_recheck_pack_balance` | Free balance read for a Recheck Pack | free |
 | `stall_fleet_pass_balance` | Free status read for a Fleet Pass | free |
+| `stall_sign_read` | Read one x402 endpoint's 402 sign: both wire formats parsed, exact decimals, declared-vs-live mismatches, Python/TS SDK verdicts | $0.01 |
+| `stall_score_book` | Track record for one resource / origin / payTo from StallRow's own stores | $0.01 |
+| `stall_guard` | Pre-pay verdict for one x402 endpoint (sign + bad-payTo registry + history): PROCEED / CAUTION / ABORT | $0.01 |
+| `stall_recheck_feed` | Free read of the Recheck feed v2 — hash-chained envelopes with a `since_seq` cursor | free |
 
 Verdicts are automated checks over public data — sanctions screens,
 catalog history, chain reads — with the evidence attached. A flag is a

@@ -1,0 +1,23 @@
+{
+ "url": "https://example.com/v1/verdict",
+ "verdict": "CAUTION",
+ "reasons": [
+  {
+   "code": "no_history",
+   "detail": "no recorded checks or catalogue presence in our stores"
+  }
+ ],
+ "terms": {
+  "scheme": "exact",
+  "network": "eip155:8453",
+  "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+  "amount_atomic": "10000",
+  "amount_decimal": "0.01",
+  "payTo": "0x097f9685D1e0752bF8B02d61E5Ce9be7eA0FBA7F",
+  "max_timeout_seconds": 300,
+  "resource": "https://example.com/v1/verdict",
+  "description": "A target service."
+ },
+ "payto_flag": null,
+ "limits": "One unpaid probe plus this service's own records, at call time."
+}

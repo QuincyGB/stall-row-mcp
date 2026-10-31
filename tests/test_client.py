@@ -104,7 +104,10 @@ def test_route_prices_cover_all_paid_routes():
     assert ROUTE_PRICES["/v1/pre-trade-guard"] == 5_000
     assert ROUTE_PRICES["/v1/orchestrate"] == 750_000
     assert ROUTE_PRICES["/v1/fleet-pass"] == 5_000_000
-    assert len(ROUTE_PRICES) == 17
+    assert ROUTE_PRICES["/v1/sign-read"] == 10_000
+    assert ROUTE_PRICES["/v1/score-book"] == 10_000
+    assert ROUTE_PRICES["/v1/guard"] == 10_000
+    assert len(ROUTE_PRICES) == 20
 
 
 # --- no signer: structured error, never a payment ----------------------------
